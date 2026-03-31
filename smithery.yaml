@@ -1,0 +1,23 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - apiKey
+    properties:
+      apiKey:
+        type: string
+        description: >-
+          Your Koalr API key. Generate one at
+          app.koalr.com/settings/api-keys — it starts with koalr_
+  commandFunction: |-
+    (config) => ({
+      command: "npx",
+      args: ["-y", "koalr-mcp@latest"],
+      env: {
+        KOALR_API_KEY: config.apiKey
+      }
+    })
+
+exampleConfig:
+  apiKey: "koalr_your_key_here"
