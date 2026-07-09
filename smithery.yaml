@@ -1,23 +1,33 @@
+# Smithery configuration for Koalr MCP server
+# https://smithery.ai/docs/config
+
 startCommand:
   type: stdio
   configSchema:
     type: object
-    required:
-      - apiKey
+    required: []
     properties:
       apiKey:
         type: string
-        description: >-
-          Your Koalr API key. Generate one at
-          app.koalr.com/settings/api-keys — it starts with koalr_
+        title: Koalr API Key
+        description: Your Koalr API key (optional — required for data access, omit for discovery only). Generate one at app.koalr.com/settings/api-keys — starts with koalr_
+        pattern: '^koalr_'
+      apiUrl:
+        type: string
+        title: API URL
+        description: Override the Koalr API base URL. Leave blank for the default (https://api.koalr.com). Only needed for self-hosted deployments.
+        default: 'https://api.koalr.com'
+  exampleConfig:
+    apiKey: koalr_your_key_here
+    apiUrl: 'https://api.koalr.com'
   commandFunction: |-
     (config) => ({
-      command: "npx",
-      args: ["-y", "koalr-mcp@latest"],
+      command: 'npx',
+      args: ['-y', 'koalr-mcp@latest'],
       env: {
-        KOALR_API_KEY: config.apiKey
+        ...(config.apiKey ? { KOALR_API_KEY: config.apiKey } : {}),
+        ...(config.apiUrl && config.apiUrl !== 'https://api.koalr.com'
+          ? { KOALR_API_URL: config.apiUrl }
+          : {})
       }
     })
-
-exampleConfig:
-  apiKey: "koalr_your_key_here"
